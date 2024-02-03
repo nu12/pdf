@@ -1,0 +1,38 @@
+name: Build Windows
+
+on:
+  workflow_call:
+    inputs:
+      go-version:
+        required: true
+        type: string
+      is-release: 
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  build:
+    name: Windows
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-go@v4
+      with:
+        go-version: ${{ inputs.go-version }}
+    - name: Build
+      run: |
+        go build -o pdf.exe main.go
+    - name: Create zip
+      if: ${{ inputs.is-release }}
+      uses: vimtor/action-zip@v1.1
+      with:
+        files: pdf.exe
+        dest: pdf-windows-amd64.zip
+    - name: Add binary to the release
+      if: ${{ inputs.is-release }}
+      env:
+        GH_TOKEN: ${{ github.TOKEN }}
+      run: |
+        gh release upload ${{ github.ref_name }} pdf-windows-amd64.zip
