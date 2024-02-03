@@ -38,12 +38,12 @@ var availableModeProfiles = map[string]model.ModeProfile{
 
 var Margin string
 var Compression string
-var Mode string
+var Orientation string
 
 func init() {
 	Cmd.Flags().StringVarP(&Compression, "compression", "c", "NONE", "Define the amount of compression to be applied to the input images. Available values are: NONE, LOWEST, LOW, MEDIUM, HIGH, HIGHEST.")
 	Cmd.Flags().StringVarP(&Margin, "margin", "m", "NONE", "Define the margins for the output document. Available values are: NONE, MIN, MEDIUM, MAX.")
-	Cmd.Flags().StringVarP(&Mode, "mode", "", "P", "Define the orientation of the output document. Available values are: P, L.")
+	Cmd.Flags().StringVarP(&Orientation, "orientation", "o", "P", "Define the orientation of the output document. Available values are: P, L.")
 }
 
 var Cmd = &cobra.Command{
@@ -66,7 +66,7 @@ var Cmd = &cobra.Command{
 
 		selectedMarginProfile := availableMarginProfiles[strings.ToUpper(Margin)]
 		selectedCompressionProfile := availableCompressionProfiles[strings.ToUpper(Compression)]
-		selectedModeProfile := availableModeProfiles[strings.ToUpper(Mode)]
+		selectedModeProfile := availableModeProfiles[strings.ToUpper(Orientation)]
 
 		files := helper.UnmarshalImages(inputs)
 

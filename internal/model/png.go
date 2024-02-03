@@ -36,8 +36,9 @@ func (img PNG) Compress(p CompressionProfile) (io.Reader, error) {
 	draw.CatmullRom.Scale(dst, dst.Rect, src, src.Bounds(), draw.Over, nil)
 
 	go func() {
-		png.Encode(pw, dst)
+		_ = png.Encode(pw, dst)
 		pw.Close()
+
 	}()
 	return pr, nil
 }
