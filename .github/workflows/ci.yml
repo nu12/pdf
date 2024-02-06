@@ -17,3 +17,8 @@ jobs:
       uses: golangci/golangci-lint-action@v3
       with:
         version: v1.53
+
+    - name: Tests
+      run: |
+        go test -coverprofile cover.out -v ./...
+        go tool cover -func=cover.out
