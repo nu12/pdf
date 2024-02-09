@@ -25,19 +25,33 @@ jobs:
         go tool cover -func=cover.out
 
   build-linux:
-    name: Build
+    name: Build Linux
     needs: [test]
-    uses: ./.github/workflows/build-linux.yml
-    with:
-      go-version: 1.20.6
-      is-release: false
-    secrets: inherit
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./.github/actions/build-linux
+      with:
+        go-version: 1.20.6
+        is-release: false
 
   build-windows:
-    name: Build
+    name: Build Windows
     needs: [test]
-    uses: ./.github/workflows/build-windows.yml
-    with:
-      go-version: 1.20.6
-      is-release: false
-    secrets: inherit
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./.github/actions/build/windows
+      with:
+        go-version: 1.20.6
+        is-release: false
+
+  docker:
+    name: Build Docker
+    needs: [test]
+    runs-on: "ubuntu-latest"
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./.github/actions/build/docker
+      with:
+        push: false
