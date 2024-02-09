@@ -6,9 +6,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/google/uuid"
 	"github.com/nu12/pdf/internal/helper"
 	"github.com/nu12/pdf/internal/model"
+	rand "github.com/nu12/rand/pkg"
 )
 
 type CreateTestCase struct {
@@ -37,7 +37,7 @@ func TestCreate(t *testing.T) {
 
 	for _, tt := range tests {
 
-		randOutput := fmt.Sprintf("../examples/outputs/%s.pdf", uuid.New().String())
+		randOutput := fmt.Sprintf("../examples/outputs/%s.pdf", rand.UUID())
 
 		err := Create(tt.Inputs, randOutput, tt.MarginProfile, tt.CompressionProfile, tt.ModeProfile)
 		if err != nil && (err.Error() != tt.Error.Error()) {
