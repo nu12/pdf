@@ -12,8 +12,8 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use:   "pdf",
-	Short: "Create, split or compress PDF files",
-	Long:  `Create, split or compress PDF files`,
+	Short: "Create, append or split PDF files",
+	Long:  `Create, append or split PDF files`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
