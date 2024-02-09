@@ -24,34 +24,40 @@ jobs:
         gh release create ${{ github.ref_name }}
 
   build-linux:
-    name: Build Linux
+    name: Build
     needs: [release]
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - uses: ./.github/actions/build/linux
-      with:
-        go-version: 1.20.6
-        is-release: true
+    uses: ./.github/workflows/build-linux.yml
+    with:
+      go-version: 1.20.6
+      is-release: true
+    secrets: inherit
 
   build-windows:
-    name: Build Windows
+    name: Build
     needs: [release]
-    runs-on: windows-latest
-    steps:
-    - uses: actions/checkout@v3
-    - uses: ./.github/actions/build/windows
-      with:
-        go-version: 1.20.6
-        is-release: true
+    uses: ./.github/workflows/build-windows.yml
+    with:
+      go-version: 1.20.6
+      is-release: true
+    secrets: inherit
     
   docker:
-    name: Build Docker
     needs: [release]
     runs-on: "ubuntu-latest"
     steps:
     - uses: actions/checkout@v3
-    - uses: ./.github/actions/docker/build
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.TOKEN }}
+      
+    - name: Build and push
+      uses: docker/build-push-action@v4
       with:
         push: true
-    
+        tags: ghcr.io/nu12/pdf:latest,ghcr.io/nu12/pdf:${{ github.ref_name }}
