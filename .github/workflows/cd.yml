@@ -2,13 +2,14 @@ name: CD
 on:
   push:
     tags:
-      - '*'
+      - 'v*'
 
 permissions:
   contents: write
 
 jobs:
   release:
+    name: Release
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -21,3 +22,29 @@ jobs:
         GH_TOKEN: ${{ github.TOKEN }}
       run: |
         gh release create ${{ github.ref_name }}
+
+  build-linux:
+    name: Build
+    needs: [release]
+    uses: ./.github/workflows/build-linux.yml
+    with:
+      go-version: 1.20.6
+      is-release: true
+    secrets: inherit
+
+  build-windows:
+    name: Build
+    needs: [release]
+    uses: ./.github/workflows/build-windows.yml
+    with:
+      go-version: 1.20.6
+      is-release: true
+    secrets: inherit
+    
+  build-docker:
+    name: Build
+    needs: [release]
+    uses: ./.github/workflows/build-docker.yml
+    with:
+      push: true
+    secrets: inherit

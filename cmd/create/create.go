@@ -48,8 +48,8 @@ func init() {
 
 var Cmd = &cobra.Command{
 	Use:   "create input1 [input2 input3 ... inputN] output",
-	Short: "Create PDF files from images",
-	Long:  `Create PDF files from images (png).`,
+	Short: "Create a PDF file from images",
+	Long:  `Create a PDF file from images (png).`,
 
 	Run: func(cmd *cobra.Command, args []string) {
 
