@@ -1,5 +1,5 @@
 FROM alpine:latest
 
-COPY pdf ./pdf
+COPY ./pdf ./pdf
 
 ENTRYPOINT [ "./pdf" ]
