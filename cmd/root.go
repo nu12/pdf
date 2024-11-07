@@ -6,14 +6,15 @@ package cmd
 import (
 	"os"
 
-	"github.com/nu12/pdf/cmd/create"
+	"github.com/nu12/pdf/cmd/append"
+	"github.com/nu12/pdf/cmd/split"
 	"github.com/spf13/cobra"
 )
 
 var rootCmd = &cobra.Command{
 	Use:   "pdf",
-	Short: "Create, append or split PDF files",
-	Long:  `Create, append or split PDF files`,
+	Short: "Append or split PDF files",
+	Long:  `Append or split PDF files`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
@@ -27,5 +28,6 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.AddCommand(create.Cmd)
+	rootCmd.AddCommand(append.Cmd)
+	rootCmd.AddCommand(split.Cmd)
 }

@@ -2,49 +2,185 @@ name: CD
 on:
   push:
     tags:
-      - 'v*'
+      - 'v*.*.*'
 
 permissions:
   contents: write
 
 jobs:
   release:
-    name: Release
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - uses: actions/setup-go@v4
-      with:
-        go-version: 1.20.6
-
     - name: Create GH release
       env:
         GH_TOKEN: ${{ github.TOKEN }}
       run: |
         gh release create ${{ github.ref_name }}
 
-  build-linux:
-    name: Build
+  linux-amd64:
     needs: [release]
-    uses: ./.github/workflows/build-linux.yml
-    with:
-      go-version: 1.20.6
-      is-release: true
-    secrets: inherit
+    runs-on: "ubuntu-latest"
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-go@v4
+      with:
+        go-version: 1.22.5
+    - name: build
+      run: |
+        go build -o pdf main.go
+    - name: Add binary to the release
+      env:
+        GH_TOKEN: ${{ github.TOKEN }}
+      run: |
+        zip pdf-linux-amd64.zip pdf
+        gh release upload ${{ github.ref_name }} pdf-linux-amd64.zip
 
-  build-windows:
-    name: Build
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.TOKEN }}
+      
+    - name: Adjust tag for docker image
+      id: tag
+      run: |
+        export TAG=$(echo "${{ github.ref_name }}" | tr -d "v")
+        echo "value=$TAG" >> "$GITHUB_OUTPUT"
+
+    - name: Build and push
+      uses: docker/build-push-action@v4
+      with:
+        file: .github/workflows/linux-amd64.Dockerfile
+        push: true
+        tags: ghcr.io/nu12/pdf:${{ steps.tag.outputs.value }}-linux-amd64
+
+  # win-amd64:
+  #   needs: [release]
+  #   runs-on: "windows-latest"
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - uses: actions/setup-go@v4
+  #     with:
+  #       go-version: 1.22.5
+  #   - name: build
+  #     run: |
+  #       go build -o pdf.exe main.go
+  #   - name: Add binary to the release
+  #     env:
+  #       GH_TOKEN: ${{ github.TOKEN }}
+  #     run: |
+  #       7z a pdf-win-amd64.zip pdf.exe
+  #       gh release upload ${{ github.ref_name }} pdf-win-amd64.zip
+
+  darwin-amd64:
     needs: [release]
-    uses: ./.github/workflows/build-windows.yml
-    with:
-      go-version: 1.20.6
-      is-release: true
-    secrets: inherit
+    runs-on: "macos-13"
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-go@v4
+      with:
+        go-version: 1.22.5
+    - name: build
+      run: |
+        go build -o pdf main.go
+    - name: Add binary to the release
+      env:
+        GH_TOKEN: ${{ github.TOKEN }}
+      run: |
+        zip pdf-darwin-amd64.zip pdf
+        gh release upload ${{ github.ref_name }} pdf-darwin-amd64.zip
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+  
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.TOKEN }}
+      
+    - name: Adjust tag for docker image
+      id: tag
+      run: |
+        export TAG=$(echo "${{ github.ref_name }}" | tr -d "v")
+        echo "value=$TAG" >> "$GITHUB_OUTPUT"
+
+    - name: Build and push
+      uses: docker/build-push-action@v4
+      with:
+        file: .github/workflows/darwin-amd64.Dockerfile
+        push: true
+        tags: ghcr.io/nu12/pdf:${{ steps.tag.outputs.value }}-darwin-amd64
+
+  darwin-arm64:
+    needs: [release]
+    runs-on: "macos-latest"
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-go@v4
+      with:
+        go-version: 1.22.5
+    - name: build
+      run: |
+        go build -o pdf main.go
+    - name: Add binary to the release
+      env:
+        GH_TOKEN: ${{ github.TOKEN }}
+      run: |
+        zip pdf-darwin-arm64.zip pdf
+        gh release upload ${{ github.ref_name }} pdf-darwin-arm64.zip
+        - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
     
-  build-docker:
-    name: Build
-    needs: [release]
-    uses: ./.github/workflows/build-docker.yml
-    with:
-      push: true
-    secrets: inherit
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.TOKEN }}
+      
+    - name: Adjust tag for docker image
+      id: tag
+      run: |
+        export TAG=$(echo "${{ github.ref_name }}" | tr -d "v")
+        echo "value=$TAG" >> "$GITHUB_OUTPUT"
+
+    - name: Build and push
+      uses: docker/build-push-action@v4
+      with:
+        file: .github/workflows/darwin-arm64.Dockerfile
+        push: true
+        tags: ghcr.io/nu12/pdf:${{ steps.tag.outputs.value }}-darwin-arm64
+
+  # docker:
+  #   needs: [release]
+  #   runs-on: "ubuntu-latest"
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: Set up Docker Buildx
+  #     uses: docker/setup-buildx-action@v2
+
+  #   - name: Login to Docker Hub
+  #     uses: docker/login-action@v2
+  #     with:
+  #       registry: ghcr.io
+  #       username: ${{ github.actor }}
+  #       password: ${{ secrets.TOKEN }}
+      
+  #   - name: Adjust tag for docker image
+  #     id: tag
+  #     run: |
+  #       export TAG=$(echo "${{ github.ref_name }}" | tr -d "v")
+  #       echo "value=$TAG" >> "$GITHUB_OUTPUT"
+
+  #   - name: Build and push
+  #     uses: docker/build-push-action@v4
+  #     with:
+  #       push: true
+  #       tags: ghcr.io/nu12/pdf:latest,ghcr.io/nu12/pdf:${{ steps.tag.outputs.value }}
