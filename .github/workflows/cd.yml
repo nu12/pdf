@@ -55,7 +55,7 @@ jobs:
     - name: Build and push
       uses: docker/build-push-action@v4
       with:
-        file: .github/workflows/linux-amd64.Dockerfile
+        file: .github/dockerfiles/linux-amd64.Dockerfile
         push: true
         tags: ghcr.io/nu12/pdf:${{ steps.tag.outputs.value }}-linux-amd64
 
@@ -114,7 +114,7 @@ jobs:
     - name: Build and push
       uses: docker/build-push-action@v4
       with:
-        file: .github/workflows/darwin-amd64.Dockerfile
+        file: .github/dockerfiles/darwin-amd64.Dockerfile
         push: true
         tags: ghcr.io/nu12/pdf:${{ steps.tag.outputs.value }}-darwin-amd64
 
@@ -154,7 +154,7 @@ jobs:
     - name: Build and push
       uses: docker/build-push-action@v4
       with:
-        file: .github/workflows/darwin-arm64.Dockerfile
+        file: .github/dockerfiles/darwin-arm64.Dockerfile
         push: true
         tags: ghcr.io/nu12/pdf:${{ steps.tag.outputs.value }}-darwin-arm64
 
