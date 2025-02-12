@@ -6,11 +6,10 @@ package cmd
 import (
 	"os"
 
-	"github.com/nu12/pdf/cmd/append"
-	"github.com/nu12/pdf/cmd/split"
 	"github.com/spf13/cobra"
 )
 
+var tmpDir string
 var rootCmd = &cobra.Command{
 	Use:   "pdf",
 	Short: "Append or split PDF files",
@@ -28,6 +27,8 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.AddCommand(append.Cmd)
-	rootCmd.AddCommand(split.Cmd)
+	rootCmd.AddCommand(appendCmd)
+	rootCmd.AddCommand(splitCmd)
+
+	rootCmd.PersistentFlags().StringVarP(&tmpDir, "temporary-directory", "t", "/tmp", "Temporary directory")
 }
