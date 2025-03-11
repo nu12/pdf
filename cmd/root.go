@@ -12,8 +12,8 @@ import (
 var tmpDir string
 var rootCmd = &cobra.Command{
 	Use:   "pdf",
-	Short: "Append or split PDF files",
-	Long:  `Append or split PDF files`,
+	Short: "Append PDF files",
+	Long:  `Append PDF files`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
@@ -28,7 +28,6 @@ func Execute() {
 
 func init() {
 	rootCmd.AddCommand(appendCmd)
-	rootCmd.AddCommand(splitCmd)
-
+	rootCmd.AddCommand(versionCmd)
 	rootCmd.PersistentFlags().StringVarP(&tmpDir, "temporary-directory", "t", "/tmp", "Temporary directory")
 }

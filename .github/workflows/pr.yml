@@ -1,4 +1,4 @@
-name: 'Continuous Integration'
+name: 'PR'
 
 on:
   workflow_dispatch: {}
@@ -14,6 +14,6 @@ jobs:
       run-lint: true
       run-test: true
       run-docker-build: true
-      go-version: '1.22'
+      go-version: '1.24.0'
       docker-tag: 'latest'
     secrets: inherit

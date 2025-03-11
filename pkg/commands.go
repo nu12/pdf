@@ -43,10 +43,6 @@ func GhostScriptForAppend(a *Append) *Append {
 	return a
 }
 
-func GhostScriptForSplit(s Split) (string, error) {
-	return "", nil
-}
-
 func Convert(src, dst string) error {
 	if _, err := exec.LookPath("convert"); err != nil {
 		return fmt.Errorf("convert executable not found")
