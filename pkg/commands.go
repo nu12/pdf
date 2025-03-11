@@ -37,7 +37,7 @@ func GhostScriptForAppend(a *Append) *Append {
 
 	err := shellCmd.Run()
 	if err != nil {
-		a.Err = fmt.Errorf(fmt.Sprint(err) + ": " + stderr.String())
+		a.Err = fmt.Errorf("%s: %s", fmt.Sprint(err), stderr.String())
 		return a
 	}
 	return a
@@ -64,7 +64,7 @@ func Convert(src, dst string) error {
 
 	err := shellCmd.Run()
 	if err != nil {
-		return fmt.Errorf(fmt.Sprint(err) + ": " + stderr.String())
+		return fmt.Errorf("%s: %s", fmt.Sprint(err), stderr.String())
 	}
 	return nil
 }
