@@ -2,6 +2,10 @@
 
 A Go CLI utility to manipulate pdf files.
 
+## Prerequisites
+
+The tools `ghostscript` and `imagemagick` must be installed in the system.
+
 ## Install
 
 ### Go install
