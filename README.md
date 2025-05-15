@@ -65,3 +65,10 @@ Run the following docker command to run `pdf` without a local instalation (we mu
 ```
 docker run --rm -v $(pwd):/app/files ghcr.io/nu12/pdf append files/input1 [files/input2 files/input3 ... files/inputN] files/output [flags]
 ```
+
+## Contributing
+
+Feel free to contribute to the version v1.0.0 of project with the following:
+* Compatibility with a wider range of image files
+* Added support for different level of compression to create smaller pdfs
+* General improvements
